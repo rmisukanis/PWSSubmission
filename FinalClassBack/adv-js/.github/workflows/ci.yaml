@@ -1,0 +1,31 @@
+name: Node.js CI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-versoin }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-versoin }}
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run build --if-present
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - run: npm run test
+    needs: build
+
